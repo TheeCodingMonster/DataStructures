@@ -1,0 +1,113 @@
+#include <iostream>
+using namespace std;
+
+void userMenu(){
+    cout << "Choose option:" << endl;
+    cout << "1) Add (to beginning)" << endl;
+    cout << "2) Remove" << endl;
+    cout << "3) Print" << endl;
+    cout << "4) Quit" << endl;
+}
+
+struct Node{
+    //void *next; //can point to any data type, not recommended
+    Node *next; //points to a structure data type, 'next' is a pointer to a stucture data type
+                //enforces type checking so this is the recommended way
+                //can also be written as 'Node* next' but this is more confusing to me, they are the same
+    int data;
+};
+Node *head = nullptr; //global variable, can be accessed by entire program, 
+                      //recommended to use nullptr for pointer to avoid function overloading
+
+void Add(int data){
+    Node *currNode = new Node; //instatiating a pointer called 'currNode' that has all attributes from 'Node', 
+                               //only created as necessary hence new Node (dynamically allocated)
+    if (head == nullptr){
+        head = currNode;
+        currNode->data = data;
+    }
+    else{
+        currNode->next = head;
+        currNode->data = data;
+        head = currNode;
+    }
+    return;
+}
+
+//doesn't remove all occurance of same data (intentional)
+void Remove(int data){
+    Node *currNode = head;
+    Node *prevNode = currNode;
+    while (currNode != NULL){
+        if (currNode->data == data){
+            if (currNode == head){
+                head = currNode->next;
+                delete currNode;
+            }
+            else{
+                prevNode->next = currNode->next;
+                delete currNode;
+            }
+            return;
+        }
+        else{
+            prevNode = currNode;
+            currNode = currNode->next;
+        }
+    }
+    cout << "Not found" << endl;
+    return;
+}
+
+void Print(){
+    if (head == nullptr){
+        cout << "Empty" << endl;
+    }
+    else{
+        Node *currNode = head;
+        while(currNode != nullptr){
+            cout << currNode->data << "->";
+            currNode = currNode->next;
+        }
+    }
+    return;
+}
+
+int main(){
+    int option = 1;
+    int userChoice;
+    int userData;
+
+    while(option == 1){
+        //Get user input
+        userMenu();
+        cin >> userChoice;
+
+        switch(userChoice){                                                      
+            case 1:
+                //Add
+                cout << "enter data to add (integer only)" << endl;
+                cin >> userData;
+                Add(userData);
+                break;
+            case 2:
+                //Remove
+                cout << "enter data to remove (integer only)" << endl;
+                cin >> userData;
+                Remove(userData);
+                break;
+            case 3:
+                //Print
+                Print();
+                break;
+            case 4:
+                //Quit
+                option = 0;
+                break;
+            default:
+                cout << "Invalid option" << endl;
+                return 0;
+        }
+    }
+    return 0;
+}
